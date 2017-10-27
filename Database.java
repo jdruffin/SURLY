@@ -65,6 +65,7 @@ public class Database{
   
   public void print(String[] rNames){
     for (int i = 0; i < database.size(); i++){
+			System.out.println();
       for(int j = 0; j < rNames.length; j++){
         Relation relation = database.get(i);
         if(relation.getName().equals(rNames[j])){

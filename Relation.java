@@ -14,14 +14,24 @@ public class Relation{
 	}
 
 	public void print(){
-		System.out.println(name);
-		for (Attribute a : relation.getFirst().getTuple()){
-			System.out.print(a.getName()+' ');
+		for (int i=0; i<name.length()+1; i++){
+			System.out.print("_");
 		}
 		System.out.println();
-		for (Tuple t : relation){
-			t.print();
+
+		System.out.println(name+":");
+
+		for (Attribute a : relation.getFirst().getTuple()){
+			System.out.printf("%-"+a.getColumnWidth()+"s", a.getName());
 		}
+		System.out.println();
+
+		if (relation.size() > 1){
+			for (int i=1; i < relation.size(); i++){
+				relation.get(i).print();
+			}
+		}
+		System.out.println();
 	}
 
 	//gets/sets

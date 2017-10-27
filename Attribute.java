@@ -7,8 +7,8 @@ public class Attribute{
 	private String name=null;
 	private String type=null;
 	private int length=0;
+	private int columnWidth=0;
 	private String value=null;
-
 
 	//constructor
 	public Attribute(String name, String type, int length, String value){
@@ -16,6 +16,11 @@ public class Attribute{
 		this.type = type;
 		this.length = length;
 		this.value = value;
+		if (name.length() <= length){
+			this.columnWidth = length+1;
+		} else {
+			this.columnWidth = name.length()+1;
+		}
 	}
 
 	public boolean fitToConstraints(){
@@ -32,7 +37,7 @@ public class Attribute{
 	}
 
 	public void print(){
-		System.out.print(value);
+		System.out.printf("%-"+columnWidth+"s", value);
 	}
 
 	//gets/sets-------------------------------------------------------------------
@@ -47,6 +52,10 @@ public class Attribute{
 
 	public int getLength(){
 		return length;
+	}
+
+	public int getColumnWidth(){
+		return columnWidth;
 	}
 
 	public String getValue(){

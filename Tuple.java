@@ -14,7 +14,6 @@ public class Tuple{
 	public void print(){
 		for (Attribute a : tuple){
 			a.print();
-			System.out.print(' ');
 		}
 		System.out.println();
 	}

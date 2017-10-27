@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.regex.*;
 import java.lang.*;
 import java.io.*;
 
@@ -14,14 +15,26 @@ public class SurlyParser{
     try{
       Scanner scanner = new Scanner(new File(filename));
       while (scanner.hasNextLine()){
+				
+				String line = scanner.nextLine();
+				StringBuffer sb = new StringBuffer();
 
-        String[] parts = scanner.nextLine().split(" ");
+				Matcher matcher = Pattern.compile("'([^']+)'").matcher(line);
+				while (matcher.find()){
+					matcher.appendReplacement(sb, matcher.group().replaceAll("\\s+", "|+"));
+				}
+				matcher.appendTail(sb);
+				line = sb.toString();
+				System.out.println(line);
+				String[] parts = line.split(" ");
 
         for(int i = 1; i < parts.length;i++){
           parts[i] = parts[i].replaceAll("\\(", "");
           parts[i] = parts[i].replaceAll("\\,", "");
           parts[i] = parts[i].replaceAll("\\)", "");
           parts[i] = parts[i].replaceAll("\\;", "");
+					parts[i] = parts[i].replaceAll("\\'", "");
+					parts[i] = parts[i].replaceAll("\\|\\+", " ");
         }
 
         if(parts[0].equals("RELATION")){
