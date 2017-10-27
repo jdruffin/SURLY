@@ -31,7 +31,7 @@ public class Database{
 		return true;
   }
 
-  public void insertTuple(String rName, String[] values){
+  public boolean insertTuple(String rName, String[] values){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
 		
@@ -58,6 +58,7 @@ public class Database{
 				return true;
       }
     }
+		return false;
   }
   
   public void print(String[] rNames){
