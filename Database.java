@@ -14,7 +14,7 @@ public class Database{
 		database = db;
 	}
 
-  public void addRelation(String rName, String[] schema){
+  public boolean addRelation(String rName, String[] schema){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
 
@@ -28,13 +28,13 @@ public class Database{
 
     Relation relation = new Relation(rName, tupleList);
     database.add(relation);
+		return true;
   }
 
   public void insertTuple(String rName, String[] values){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
 		
-		boolean goodTuple = true;
     for (int i = 0; i < database.size(); i++) {
 			Relation relation = database.get(i);
       if(relation.getName().equals(rName)){
@@ -50,22 +50,18 @@ public class Database{
           	attributeList.add(newEntry);
 					} else {
 						System.out.println("Unable to add tuple: Entry '"+values[j]+"' in '"+relation.getName()+"' is invalid.");
-						goodTuple = false;
-						break;
+						return false;
 					}
         }
-        //ISSUE WITH '' IN TEST.TXT
-				if (goodTuple){
-        	Tuple newTuple = new Tuple(attributeList);
-        	relation.getRelation().add(newTuple);
-				}
+        Tuple newTuple = new Tuple(attributeList);
+        relation.getRelation().add(newTuple);
+				return true;
       }
     }
   }
   
   public void print(String[] rNames){
     for (int i = 0; i < database.size(); i++){
-			System.out.println();
       for(int j = 0; j < rNames.length; j++){
         Relation relation = database.get(i);
         if(relation.getName().equals(rNames[j])){

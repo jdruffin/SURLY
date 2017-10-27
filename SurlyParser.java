@@ -27,7 +27,7 @@ public class SurlyParser{
 				line = sb.toString();
 				String[] parts = line.split(" ");
 
-        for(int i = 1; i < parts.length;i++){
+        for (int i = 1; i < parts.length;i++){
           parts[i] = parts[i].replaceAll("\\(", "");
           parts[i] = parts[i].replaceAll("\\,", "");
           parts[i] = parts[i].replaceAll("\\)", "");
@@ -36,20 +36,23 @@ public class SurlyParser{
 					parts[i] = parts[i].replaceAll("\\|\\+", " ");
         }
 
-        if(parts[0].equals("RELATION")){
+        if (parts[0].equals("RELATION")){
           String rName = parts[1];
           String[] schema = Arrays.copyOfRange(parts, 2, parts.length);
-          database.addRelation(rName, schema);
-
+          if (database.addRelation(rName, schema)){
+						System.out.println("Created relation '"+rName+"'");
+					}
         }
 
-        if(parts[0].equals("INSERT")){
+        if (parts[0].equals("INSERT")){
           String rName = parts[1];
           String[] values = Arrays.copyOfRange(parts, 2, parts.length);
-          database.insertTuple(rName, values);
+          if (database.insertTuple(rName, values)){
+						System.out.println("Insert in '"+rName+"'");
+					}
         }
 
-        if(parts[0].equals("PRINT")){
+        if (parts[0].equals("PRINT")){
           String[] rNames = Arrays.copyOfRange(parts, 1, parts.length);
           database.print(rNames);
         }
