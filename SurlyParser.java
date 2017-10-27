@@ -25,7 +25,6 @@ public class SurlyParser{
 				}
 				matcher.appendTail(sb);
 				line = sb.toString();
-				System.out.println(line);
 				String[] parts = line.split(" ");
 
         for(int i = 1; i < parts.length;i++){
