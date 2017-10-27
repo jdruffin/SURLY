@@ -5,13 +5,16 @@ import java.io.*;
 public class SURLY{
 
 	public static void main(String args[]){
-    SurlyParser parser = new SurlyParser(new Database());
-    parser.parse("test.txt");
-    /*take commands from cmd prompt
-    while(true){
-      system.in
-    }*/
-
+		Database database = new Database();
+    SurlyParser parser = new SurlyParser(database);
+		if (args.length > 0){
+			boolean parseable = parser.parseFile(args[0]);
+    	if (!parseable){
+				System.out.println("Usage: SURLY.java [filename]");
+			}
+		}
+		System.out.println("User input options: SURLY commands, 'file <inputFileName>', 'saveDB <filepath>', 'exit' to close");
+		parser.parseInput();
   }
 
 }
