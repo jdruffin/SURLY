@@ -22,7 +22,7 @@ public class SurlyParser{
         System.out.println("Goodbye.");
         System.exit(1);
       } else if (parts[0].equals("saveDB")){ //not implemented yet
-        saveToFile(parts[1], "");
+        saveToFile(parts[1], "1");
       } else if (parts[0].equals("file")){
         parseFile(parts[1]);
       } else {
