@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-public class Database{
+public class Database implements java.io.Serializable{
 
   private LinkedList<Relation> database = null;
 
@@ -48,7 +48,7 @@ public class Database{
           if (newEntry.fitToConstraints()){
           	attributeList.add(newEntry);
 					} else {
-						System.out.println("Unable to add tuple: Entry '"+values[j]+"' in '"+relation.getName()+"' is invalid.");
+						System.out.println("Unable to add tuple: Entry '"+values[j]+"' in '"+relation.getName()+"' is invalid for field '"+name+"'.");
 						return false;
 					}
         }
@@ -62,17 +62,23 @@ public class Database{
   }
 
   public void print(String[] rNames){
-    boolean exists = false;
-    for (int i = 0; i < rNames.length; i++){
-      for (int j = 0; j < database.size(); j++){
-        Relation relation = database.get(j);
-        if (relation.getName().equals(rNames[i])){
-          exists = true;
-          relation.print();
-        }
+    if (rNames.length == 0){
+      for (Relation r : database){
+        System.out.println(" "+r.getName());
       }
-      if (!exists){
-        System.out.println("Couldn't find relation '"+rNames[i]+"'");
+    } else {
+      boolean exists = false;
+      for (int i = 0; i < rNames.length; i++){
+        for (int j = 0; j < database.size(); j++){
+          Relation relation = database.get(j);
+          if (relation.getName().equals(rNames[i])){
+            exists = true;
+            relation.print();
+          }
+        }
+        if (!exists){
+          System.out.println("Couldn't find relation '"+rNames[i]+"'");
+        }
       }
     }
   }

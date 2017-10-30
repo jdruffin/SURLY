@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-public class Relation{
+public class Relation implements java.io.Serializable{
 
 	private String name;
 	private LinkedList<Tuple> relation = new LinkedList<Tuple>();

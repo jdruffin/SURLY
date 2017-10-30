@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-public class Attribute{
+public class Attribute implements java.io.Serializable{
 
 	private String name=null;
 	private String type=null;
@@ -24,7 +24,7 @@ public class Attribute{
 	}
 
 	public boolean fitToConstraints(){
-    if (type.equals("NUM")){
+    if (type.toUpperCase().equals("NUM")){
       if (!value.matches("[0-9]+")){
         System.out.println("Invalid entry: '" + name + "' field requires only numeric values.");
         return false;

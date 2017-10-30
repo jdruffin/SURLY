@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-public class Tuple{
+public class Tuple implements java.io.Serializable{
 
 	private LinkedList<Attribute> tuple = new LinkedList<Attribute>();
 

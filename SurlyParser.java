@@ -15,12 +15,15 @@ public class SurlyParser{
     Scanner input = new Scanner(System.in);
     System.out.print("SURLY:> ");
     String line = input.nextLine();
-    while (!line.equals("EXIT")) {
+    while (!line.toUpperCase().equals("EXIT")) {
+      //System.out.println();
       String[] parts = formatCommand(line);
 
-      if (parts[0].equals("SAVEDB")){ //not implemented yet
-        saveToFile(parts[1], "1");
-      } else if (parts[0].equals("FILE")){
+      if (parts[0].toUpperCase().equals("SAVEAS")){ //not implemented yet
+        saveToFile(parts[1]);
+      } else if (parts[0].toUpperCase().equals("LOAD")){
+        database = loadFromFile(parts[1]);
+      } else if (parts[0].toUpperCase().equals("INPUT")){
         parseFile(parts[1]);
       } else {
         executeCommand(parts);
@@ -51,19 +54,19 @@ public class SurlyParser{
   }
 
   private void executeCommand(String[] parts){
-    if (parts[0].equals("RELATION")){
+    if (parts[0].toUpperCase().equals("RELATION")){
       String rName = parts[1];
       String[] schema = Arrays.copyOfRange(parts, 2, parts.length);
       database.addRelation(rName, schema);
     }
 
-    if (parts[0].equals("INSERT")){
+    if (parts[0].toUpperCase().equals("INSERT")){
       String rName = parts[1];
       String[] values = Arrays.copyOfRange(parts, 2, parts.length);
       database.insertTuple(rName, values);
     }
 
-    if (parts[0].equals("PRINT")){
+    if (parts[0].toUpperCase().equals("PRINT")){
       String[] rNames = Arrays.copyOfRange(parts, 1, parts.length);
       database.print(rNames);
     }
@@ -88,19 +91,40 @@ public class SurlyParser{
       parts[i] = parts[i].replaceAll("\\'", "");
       parts[i] = parts[i].replaceAll("\\|\\+", " ");
     }
-		parts[0] = parts[0].toUpperCase();
     return parts;
   }
 
-  private void saveToFile(String fileName, String text){
+  private void saveToFile(String fileName){
     try{
-      File savePath = new File (fileName);
-      BufferedWriter out = new BufferedWriter(new FileWriter(savePath));
-      out.write(text);
+      FileOutputStream fileOut = new FileOutputStream(fileName+".sur");
+      ObjectOutputStream out = new ObjectOutputStream(fileOut);
+      out.writeObject(database);
       out.close();
+      fileOut.close();
+      System.out.println("Saved database to "+fileName+".sur");
     } catch (IOException e){
-      System.out.println("Couldn't write to file.");
+      System.out.println("Couldn't save to file.");
     }
+  }
+
+  private Database loadFromFile(String fileName){
+    Database db = new Database();
+    try{
+      if (fileName.contains(".sur")){
+        FileInputStream fileIn = new FileInputStream(fileName);
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+        db = (Database) in.readObject();
+        in.close();
+        fileIn.close();
+      } else {
+        System.out.println("Requires '<filename>.sur'");
+      }
+    } catch (IOException e) {
+      System.out.println("Could not read from file "+fileName);
+    } catch (ClassNotFoundException c) {
+      System.out.println("Could not find Database.class");
+    }
+    return db;
   }
 
   public Database getDatabase(){
