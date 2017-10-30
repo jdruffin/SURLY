@@ -15,15 +15,12 @@ public class SurlyParser{
     Scanner input = new Scanner(System.in);
     System.out.print("SURLY:> ");
     String line = input.nextLine();
-    while (!line.equals("exit")) {
+    while (!line.equals("EXIT")) {
       String[] parts = formatCommand(line);
 
-      if (parts[0].equals("exit")){
-        System.out.println("Goodbye.");
-        System.exit(1);
-      } else if (parts[0].equals("saveDB")){ //not implemented yet
+      if (parts[0].equals("SAVEDB")){ //not implemented yet
         saveToFile(parts[1], "1");
-      } else if (parts[0].equals("file")){
+      } else if (parts[0].equals("FILE")){
         parseFile(parts[1]);
       } else {
         executeCommand(parts);
@@ -31,6 +28,8 @@ public class SurlyParser{
       System.out.print("SURLY:> ");
       line = input.nextLine();
     }
+		System.out.println("Goodbye.");
+		System.exit(1);
     input.close();
   }
 
@@ -89,6 +88,7 @@ public class SurlyParser{
       parts[i] = parts[i].replaceAll("\\'", "");
       parts[i] = parts[i].replaceAll("\\|\\+", " ");
     }
+		parts[0] = parts[0].toUpperCase();
     return parts;
   }
 
