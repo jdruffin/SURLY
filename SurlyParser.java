@@ -19,12 +19,14 @@ public class SurlyParser{
       //System.out.println();
       String[] parts = formatCommand(line);
 
-      if (parts[0].toUpperCase().equals("SAVEAS")){ //not implemented yet
+      if (parts[0].toUpperCase().equals("SAVEAS")){
         saveToFile(parts[1]);
       } else if (parts[0].toUpperCase().equals("LOAD")){
         database = loadFromFile(parts[1]);
       } else if (parts[0].toUpperCase().equals("INPUT")){
         parseFile(parts[1]);
+			} else if (parts[0].toUpperCase().equals("HELP")){
+				System.out.println("Help:\nUser input options: SURLY commands; 'input <inputFileName>';\n'load <saveFileName>'; saveas <fileName>;\n'exit' to close;");
       } else {
         executeCommand(parts);
       }

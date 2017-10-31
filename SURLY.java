@@ -13,7 +13,7 @@ public class SURLY{
 				System.out.println("Usage: SURLY.java [filename]");
 			}
 		}
-		System.out.println("User input options: SURLY syntax; 'input <inputFileName>'; 'load <saveFileName>'; saveas <fileName>; 'exit';");
+		System.out.println("Enter 'help' for help, 'exit' to close;");
 		parser.parseInput();
   }
 
