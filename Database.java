@@ -13,31 +13,51 @@ public class Database implements java.io.Serializable{
   public void addRelation(String rName, String[] schema){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
+		String name, type, length;
 
-    for(int i = 0; i < schema.length; i = i+3){
-      Attribute attribute = new Attribute(schema[i], schema[i+1], Integer.parseInt(schema[i+2]), null);
-      attributeList.add(attribute);
-    }
+		if ((schema.length % 3) == 0){
+    	for (int i = 0; i < schema.length; i = i+3){
+				name = schema[i];
+				type = schema[i+1];
+				length = schema[i+2];
+				
+				if ((type.toUpperCase().equals("CHAR") || type.toUpperCase().equals("NUM")) && length.matches("\\d+")){
+					Attribute attribute = new Attribute(name, type, Integer.parseInt(length), null);
+      		attributeList.add(attribute);
+				} else {
+					System.out.println("RELATION_ERR: Invalid attribute domain ("+rName+").");
+					return;
+				}
+    	}
+		} else {
+			System.out.println("RELATION_ERR: Wrong number of arguments in declaration ("+rName+").");
+			return;
+		}
 
     Tuple tuple = new Tuple(attributeList);
     tupleList.add(tuple);
+
     if (findRelation(rName) == null){
       Relation relation = new Relation(rName, tupleList);
       database.add(relation);
     } else {
-      System.out.println("Unable to add relation '"+rName+"': Already exists"); // will be changed in v.2 to DESTROY old relation
+      System.out.println("RELATION_ERR: Relation already exists ("+rName+")."); // will be changed in v.2 to DESTROY old relation
+			return;
     }
   }
 
-  public boolean insertTuple(String rName, String[] values){
+  public void insertTuple(String rName, String[] values){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
-
+		
     for (int i = 0; i < database.size(); i++) {
 			Relation relation = database.get(i);
       if (relation.getName().equals(rName)){
 				LinkedList<Attribute> refTuple = relation.getRelation().getFirst().getTuple();
-
+				if (values.length != refTuple.size()){
+					System.out.println("INSERT_ERR: Mismatched number of attributes ("+relation.getName()+").");
+					return;
+				}
         for (int j = 0; j < refTuple.size(); j++){
 					Attribute refAttribute = refTuple.get(j);
 					String name = refAttribute.getName();
@@ -48,23 +68,29 @@ public class Database implements java.io.Serializable{
           if (newEntry.fitToConstraints()){
           	attributeList.add(newEntry);
 					} else {
-						System.out.println("Unable to add tuple: Entry '"+values[j]+"' in '"+relation.getName()+"' is invalid for field '"+name+"'.");
-						return false;
+						System.out.println("INSERT_ERR: Entry '"+values[j]+"' in '"+relation.getName()+"' has invalid format for field '"+name+"'.");
+						return;
 					}
         }
         Tuple newTuple = new Tuple(attributeList);
         relation.getRelation().add(newTuple);
-        return true;
+        return;
       }
     }
-    System.out.println("Unable to find relation '"+rName+"'");
-    return false;
+    System.out.println("INSERT_ERR: Unable to find relation ("+rName+").");
+    return;
   }
 
   public void print(String[] rNames){
     if (rNames.length == 0){
+			String schema = "";
       for (Relation r : database){
-        System.out.println(" "+r.getName());
+        schema = " "+r.getName()+" (";
+				for (Attribute a : r.getRelation().getFirst().getTuple()){
+						schema += a.getName()+", ";
+				}
+				schema = schema.substring(0, schema.length()-2)+");";
+				System.out.println(schema);
       }
     } else {
       boolean exists = false;
@@ -77,7 +103,7 @@ public class Database implements java.io.Serializable{
           }
         }
         if (!exists){
-          System.out.println("Couldn't find relation '"+rNames[i]+"'");
+          System.out.println("PRINT_ERR: Unable to find relation ("+rNames[i]+").");
         }
       }
     }

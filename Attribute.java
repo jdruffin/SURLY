@@ -29,9 +29,13 @@ public class Attribute implements java.io.Serializable{
         System.out.println("Invalid entry: '" + name + "' field requires only numeric values.");
         return false;
 			}
-		}
-    if (value.length() > length){
+			if (value.length() > length){
+				value = value.substring(value.length()-length, value.length());
+			}
+		} else{
+    	if (value.length() > length){
       value = value.substring(0, length);
+			}
     }
 		return true;
 	}

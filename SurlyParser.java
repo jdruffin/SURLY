@@ -15,29 +15,36 @@ public class SurlyParser{
     Scanner input = new Scanner(System.in);
     System.out.print("SURLY:> ");
     String line = input.nextLine();
+
     while (!line.toUpperCase().equals("EXIT")) {
-      //System.out.println();
       String[] parts = formatCommand(line);
 
-      if (parts[0].toUpperCase().equals("SAVEAS")){
-        saveToFile(parts[1]);
-      } else if (parts[0].toUpperCase().equals("LOAD")){
-        database = loadFromFile(parts[1]);
-      } else if (parts[0].toUpperCase().equals("INPUT")){
-        parseFile(parts[1]);
-			} else if (parts[0].toUpperCase().equals("HELP")){
-				System.out.println("Help:\nUser input options: SURLY commands; 'input <inputFileName>';\n'load <saveFileName>'; saveas <fileName>;\n'exit' to close;");
-      } else {
-        executeCommand(parts);
+      switch (parts[0].toUpperCase()){
+        case "SAVEAS":
+          saveToFile(parts[1]);
+          break;
+        case "LOAD":
+          database = loadFromFile(parts[1]);
+          break;
+        case "INPUT":
+          parseFile(parts[1]);
+          break;
+			  case "HELP":
+				  System.out.println("Help:\nUser input options: SURLY commands; 'input <inputFileName>';\n'load <saveFileName>'; saveas <fileName>;\n'exit' to close;");
+          break;
+        default:
+          executeCommand(parts);
+          break;
       }
       System.out.print("SURLY:> ");
       line = input.nextLine();
     }
+
 		System.out.println("Goodbye.");
 		System.exit(1);
     input.close();
   }
-
+	
   public boolean parseFile(String filename){
     try{
       Scanner scanner = new Scanner(new File(filename));
@@ -56,21 +63,23 @@ public class SurlyParser{
   }
 
   private void executeCommand(String[] parts){
-    if (parts[0].toUpperCase().equals("RELATION")){
-      String rName = parts[1];
-      String[] schema = Arrays.copyOfRange(parts, 2, parts.length);
-      database.addRelation(rName, schema);
-    }
-
-    if (parts[0].toUpperCase().equals("INSERT")){
-      String rName = parts[1];
-      String[] values = Arrays.copyOfRange(parts, 2, parts.length);
-      database.insertTuple(rName, values);
-    }
-
-    if (parts[0].toUpperCase().equals("PRINT")){
-      String[] rNames = Arrays.copyOfRange(parts, 1, parts.length);
-      database.print(rNames);
+		switch (parts[0].toUpperCase()){
+			case "RELATION":
+				String createName = parts[1];
+      	String[] schema = Arrays.copyOfRange(parts, 2, parts.length);
+      	database.addRelation(createName, schema);
+				break;
+    	case "INSERT":
+      	String insertName = parts[1];
+      	String[] values = Arrays.copyOfRange(parts, 2, parts.length);
+      	database.insertTuple(insertName, values);
+				break;
+    	case "PRINT":
+      	String[] printNames = Arrays.copyOfRange(parts, 1, parts.length);
+      	database.print(printNames);
+				break;
+			default:
+				break;
     }
   }
 
