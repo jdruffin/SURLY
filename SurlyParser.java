@@ -44,7 +44,7 @@ public class SurlyParser{
 		System.exit(1);
     input.close();
   }
-	
+
   public boolean parseFile(String filename){
     try{
       Scanner scanner = new Scanner(new File(filename));
@@ -63,23 +63,61 @@ public class SurlyParser{
   }
 
   private void executeCommand(String[] parts){
-		switch (parts[0].toUpperCase()){
-			case "RELATION":
-				String createName = parts[1];
-      	String[] schema = Arrays.copyOfRange(parts, 2, parts.length);
-      	database.addRelation(createName, schema);
-				break;
-    	case "INSERT":
-      	String insertName = parts[1];
-      	String[] values = Arrays.copyOfRange(parts, 2, parts.length);
-      	database.insertTuple(insertName, values);
-				break;
-    	case "PRINT":
-      	String[] printNames = Arrays.copyOfRange(parts, 1, parts.length);
-      	database.print(printNames);
-				break;
-			default:
-				break;
+    if (parts[1] != "="){
+      switch (parts[0].toUpperCase()){
+  			case "RELATION":
+  				String createName = parts[1];
+        	String[] schema = Arrays.copyOfRange(parts, 2, parts.length);
+        	database.addRelation(createName, schema);
+  				return;
+      	case "INSERT":
+        	String insertName = parts[1];
+        	String[] values = Arrays.copyOfRange(parts, 2, parts.length);
+        	database.insertTuple(insertName, values);
+  				return;
+      	case "PRINT":
+        	String[] printNames = Arrays.copyOfRange(parts, 1, parts.length);
+        	database.print(printNames);
+  				return;
+        case "DESTROY":
+          String destroyName = parts[1];
+          database.destroy(destroyName);
+          return;
+        case "DELETE":
+          String deleteName = parts[1];
+          String[] conditions = {};
+          if (parts.length > 2){
+            conditions = Arrays.copyOfRange(parts, 2, parts.length);
+          }
+          database.deleteWhere(deleteName, conditions);
+          return;
+  			default:
+  				return;
+      }
+    }else{
+      switch (parts[2].toUpperCase()){
+        case "SELECT":
+          String selectName = parts[3];
+          String[] conditions = {};
+          if (parts.length > 4){
+            conditions = Arrays.copyOfRange(parts, 4, parts.length);
+          }
+          database.selectWhere(selectName, conditions);
+          return;
+        case "PROJECT":
+          String projectName = parts[parts.length-1];
+          String[] attributes = Arrays.copyOfRange(parts, 3, parts.length-2);
+          database.project(projectName, attributes);
+          return;
+        case "JOIN":
+          String joinName1 = parts[3];
+          String joinName2 = parts[4];
+          String[] joinCondition = Arrays.copyOfRange(parts, 5, parts.length);
+          database.join(joinName1, joinName2, joinCondition);
+          return;
+        default:
+          return;
+      }
     }
   }
 

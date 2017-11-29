@@ -20,7 +20,7 @@ public class Database implements java.io.Serializable{
 				name = schema[i];
 				type = schema[i+1];
 				length = schema[i+2];
-				
+
 				if ((type.toUpperCase().equals("CHAR") || type.toUpperCase().equals("NUM")) && length.matches("\\d+")){
 					Attribute attribute = new Attribute(name, type, Integer.parseInt(length), null);
       		attributeList.add(attribute);
@@ -49,7 +49,7 @@ public class Database implements java.io.Serializable{
   public void insertTuple(String rName, String[] values){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
-		
+
     for (int i = 0; i < database.size(); i++) {
 			Relation relation = database.get(i);
       if (relation.getName().equals(rName)){
@@ -107,6 +107,26 @@ public class Database implements java.io.Serializable{
         }
       }
     }
+  }
+
+  public void destroy(String rName){
+
+  }
+
+  public void deleteWhere(String rName, String[] condList){
+
+  }
+
+  public void selectWhere(String rName, String[] condList){
+
+  }
+
+  public void project(String rName, String[] attList){
+
+  }
+
+  public void join(String r1, String r2, String[] cond){
+
   }
 
   private Relation findRelation(String rName){
