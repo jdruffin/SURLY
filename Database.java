@@ -37,43 +37,38 @@ public class Database implements java.io.Serializable{
     Tuple tuple = new Tuple(attributeList);
     tupleList.add(tuple);
 
-    if (findRelation(rName) == null){
-      Relation relation = new Relation(rName, tupleList);
-      database.add(relation);
-    } else {
-      System.out.println("RELATION_ERR: Relation already exists ("+rName+")."); // will be changed in v.2 to DESTROY old relation
-			return;
-    }
+    Relation relation = new Relation(rName, tupleList);
+    destroy(rName);
+    database.add(relation);
   }
 
   public void insertTuple(String rName, String[] values){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
 
-    for (int i = 0; i < database.size(); i++) {
-			Relation relation = database.get(i);
-      if (relation.getName().equals(rName)){
-				LinkedList<Attribute> refTuple = relation.getRelation().getFirst().getTuple();
+    for (Relation r : database){
+      if (r.getName().equals(rName)){
+        LinkedList<Attribute> refTuple = r.getRelation().getFirst().getTuple();
 				if (values.length != refTuple.size()){
-					System.out.println("INSERT_ERR: Mismatched number of attributes ("+relation.getName()+").");
+					System.out.println("INSERT_ERR: Mismatched number of attributes ("+r.getName()+").");
 					return;
 				}
-        for (int j = 0; j < refTuple.size(); j++){
-					Attribute refAttribute = refTuple.get(j);
-					String name = refAttribute.getName();
-					String type = refAttribute.getType();
-					int length = refAttribute.getLength();
-
-          Attribute newEntry = new Attribute(name, type, length, values[j]);
+        int enumerate = 0;
+        for (Attribute a : refTuple){
+          String name = a.getName();
+					String type = a.getType();
+					int length = a.getLength();
+          Attribute newEntry = new Attribute(name, type, length, values[enumerate]);
           if (newEntry.fitToConstraints()){
           	attributeList.add(newEntry);
 					} else {
-						System.out.println("INSERT_ERR: Entry '"+values[j]+"' in '"+relation.getName()+"' has invalid format for field '"+name+"'.");
+            System.out.println("INSERT_ERR: Entry '"+values[enumerate]+"' in '"+r.getName()+"' has invalid format for field '"+name+"'.");
 						return;
 					}
+          enumerate += 1;
         }
         Tuple newTuple = new Tuple(attributeList);
-        relation.getRelation().add(newTuple);
+        r.getRelation().add(newTuple);
         return;
       }
     }
@@ -95,11 +90,11 @@ public class Database implements java.io.Serializable{
     } else {
       boolean exists = false;
       for (int i = 0; i < rNames.length; i++){
-        for (int j = 0; j < database.size(); j++){
-          Relation relation = database.get(j);
-          if (relation.getName().equals(rNames[i])){
+        exists = false;
+        for (Relation r : database){
+          if (r.getName().equals(rNames[i])){
             exists = true;
-            relation.print();
+            r.print();
           }
         }
         if (!exists){
@@ -110,7 +105,11 @@ public class Database implements java.io.Serializable{
   }
 
   public void destroy(String rName){
-
+    Relation oldRelation = findRelation(rName);
+    if (oldRelation != null){
+      database.remove(oldRelation);
+      System.out.println("Destroyed relation "+rName+".");
+    }
   }
 
   public void deleteWhere(String rName, String[] condList){
@@ -130,12 +129,12 @@ public class Database implements java.io.Serializable{
   }
 
   private Relation findRelation(String rName){
-    for (int i=0; i < database.size(); i++){
-      Relation match = database.get(i);
-      if (match.getName().equals(rName)){
-        return match;
+    for (Relation r : database){
+      if (r.getName().equals(rName)){
+        return r;
       }
     }
+    //else
     return null;
   }
 
