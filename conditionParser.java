@@ -78,6 +78,9 @@ public class conditionParser{
   public static boolean helper(ArrayList<String> operators, ArrayList<Boolean> bools){
     //System.out.println(operators.size());
     //System.out.println(bools.size());
+    if(bools.size() == 0){
+      return false;
+    }
     for(int i = 0; i < operators.size(); i++){
       if(operators.get(i).equals("and")){
         boolean result = bools.get(i) && bools.get(i+1);
@@ -100,13 +103,13 @@ public class conditionParser{
     ArrayList<String> operators = createOperators(conditions);
     ArrayList<Boolean> bools    = createBools(tuple, conditions);
 
-//	   for(String s: operators){
- //      System.out.println(s);
-   //  }
+	   for(String s: operators){
+       System.out.println(s);
+     }
 
-    // for(boolean s: bools){
-     //  System.out.println(s);
-    // }
+     for(boolean s: bools){
+       System.out.println(s);
+     }
     boolean result = helper(operators, bools);
 
     return result;
