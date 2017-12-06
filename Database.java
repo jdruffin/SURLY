@@ -46,34 +46,34 @@ public class Database implements java.io.Serializable{
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
 
-    for (Relation r : database){
-      if (r.getName().equals(rName)){
-        LinkedList<Attribute> refTuple = r.getRelation().getFirst().getTuple();
-				if (values.length != refTuple.size()){
-					System.out.println("INSERT_ERR: Mismatched number of attributes ("+r.getName()+").");
+    Relation insertRel = findRelation(rName);
+    if (insertRel != null){
+      LinkedList<Attribute> refTuple = insertRel.getRelation().getFirst().getTuple();
+			if (values.length != refTuple.size()){
+				System.out.println("INSERT_ERR: Mismatched number of attributes ("+insertRel.getName()+").");
+				return;
+			}
+      int enumerate = 0;
+      for (Attribute a : refTuple){
+        String name = a.getName();
+				String type = a.getType();
+				int length = a.getLength();
+        Attribute newEntry = new Attribute(name, type, length, values[enumerate]);
+        if (newEntry.fitToConstraints()){
+        	attributeList.add(newEntry);
+				} else {
+          System.out.println("INSERT_ERR: Entry '"+values[enumerate]+"' in '"+insertRel.getName()+"' has invalid format for field '"+name+"'.");
 					return;
 				}
-        int enumerate = 0;
-        for (Attribute a : refTuple){
-          String name = a.getName();
-					String type = a.getType();
-					int length = a.getLength();
-          Attribute newEntry = new Attribute(name, type, length, values[enumerate]);
-          if (newEntry.fitToConstraints()){
-          	attributeList.add(newEntry);
-					} else {
-            System.out.println("INSERT_ERR: Entry '"+values[enumerate]+"' in '"+r.getName()+"' has invalid format for field '"+name+"'.");
-						return;
-					}
-          enumerate += 1;
-        }
-        Tuple newTuple = new Tuple(attributeList);
-        r.getRelation().add(newTuple);
-        return;
+        enumerate += 1;
       }
+      Tuple newTuple = new Tuple(attributeList);
+      insertRel.getRelation().add(newTuple);
+      return;
+    } else {
+      System.out.println("INSERT_ERR: Unable to find relation ("+rName+").");
+      return;
     }
-    System.out.println("INSERT_ERR: Unable to find relation ("+rName+").");
-    return;
   }
 
   public void print(String[] rNames){
@@ -116,15 +116,46 @@ public class Database implements java.io.Serializable{
 
   }
 
-  public void selectWhere(String rName, String[] condList){
+  public void selectWhere(String rName, String[] condList, String tName){
 
   }
 
-  public void project(String rName, String[] attList){
-
+  public void project(String rName, String[] attList, String tName){
+      LinkedList<Tuple> projectRel = findRelation(rName).getRelation();
+      if (projectRel != null){
+        Tuple baseTuple = projectRel.getFirst();
+        LinkedList<Attribute> tmpAtt = new LinkedList<Attribute>();
+        LinkedList<Integer> indices = new LinkedList<Integer>();
+        for (int i=0; i < attList.length; i++){ // add relevant attributes and their indices to lists
+          int enumerate = 0;
+          for (Attribute a : baseTuple.getTuple()){
+            if (a.getName().equals(attList[i])){
+              tmpAtt.add(a);
+              indices.add(enumerate);
+              break;
+            }
+            enumerate += 1;
+          }
+        }
+        LinkedList<Tuple> tmpTup = new LinkedList<Tuple>();
+        tmpTup.add(new Tuple(tmpAtt));
+        for (Tuple t : projectRel){
+          if (!t.equals(projectRel.getFirst())){
+            tmpAtt = new LinkedList<Attribute>();
+            LinkedList<Attribute> att = t.getTuple();
+            for (int i : indices){
+              tmpAtt.add(att.get(i));
+            }
+            Tuple projectTup = new Tuple(tmpAtt);
+            tmpTup.add(projectTup);
+          }
+        }
+        Relation tempRel = new Relation(tName, tmpTup);
+        database.add(tempRel);
+      }
   }
 
-  public void join(String r1, String r2, String[] cond){
+  public void join(String r1, String r2, String[] cond, String tName){
 
   }
 

@@ -63,7 +63,7 @@ public class SurlyParser{
   }
 
   private void executeCommand(String[] parts){
-    if (parts[1] != "="){
+    if (!parts[1].equals("=")){
       switch (parts[0].toUpperCase()){
   			case "RELATION":
   				String createName = parts[1];
@@ -95,6 +95,7 @@ public class SurlyParser{
   				return;
       }
     }else{
+      String tempName = parts[0];
       switch (parts[2].toUpperCase()){
         case "SELECT":
           String selectName = parts[3];
@@ -102,18 +103,18 @@ public class SurlyParser{
           if (parts.length > 4){
             conditions = Arrays.copyOfRange(parts, 4, parts.length);
           }
-          database.selectWhere(selectName, conditions);
+          database.selectWhere(selectName, conditions, tempName);
           return;
         case "PROJECT":
           String projectName = parts[parts.length-1];
           String[] attributes = Arrays.copyOfRange(parts, 3, parts.length-2);
-          database.project(projectName, attributes);
+          database.project(projectName, attributes, tempName);
           return;
         case "JOIN":
           String joinName1 = parts[3];
           String joinName2 = parts[4];
           String[] joinCondition = Arrays.copyOfRange(parts, 5, parts.length);
-          database.join(joinName1, joinName2, joinCondition);
+          database.join(joinName1, joinName2, joinCondition, tempName);
           return;
         default:
           return;
