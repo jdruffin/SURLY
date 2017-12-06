@@ -46,4 +46,8 @@ public class Relation implements java.io.Serializable{
 	public LinkedList<Tuple> getRelation(){
 		return relation;
 	}
+
+	public void setRelation(LinkedList<Tuple> r){
+		this.relation = r;
+	}
 }
