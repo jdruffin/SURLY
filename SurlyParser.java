@@ -16,7 +16,7 @@ public class SurlyParser{
     System.out.print("SURLY:> ");
     String line = input.nextLine();
 
-    while (!line.toUpperCase().equals("EXIT")) {
+    while (!line.equalsIgnoreCase("EXIT")) {
       String[] parts = formatCommand(line);
 
       switch (parts[0].toUpperCase()){
@@ -41,7 +41,7 @@ public class SurlyParser{
     }
 
 		System.out.println("Goodbye.");
-		System.exit(1);
+		System.exit(0);
     input.close();
   }
 
@@ -113,7 +113,7 @@ public class SurlyParser{
         case "JOIN":
           String joinName1 = parts[3];
           String joinName2 = parts[4];
-          String[] joinCondition = Arrays.copyOfRange(parts, 5, parts.length);
+          String[] joinCondition = Arrays.copyOfRange(parts, 6, parts.length);
           database.join(joinName1, joinName2, joinCondition, tempName);
           return;
         default:
