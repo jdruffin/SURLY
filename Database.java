@@ -77,7 +77,7 @@ public class Database implements java.io.Serializable{
   }
 
   public void print(String[] rNames){
-    if (rNames.length == 0){
+    if (rNames.length == 1){
 			String schema = "";
       for (Relation r : database){
         schema = " "+r.getName()+" (";
@@ -89,7 +89,7 @@ public class Database implements java.io.Serializable{
       }
     } else {
       boolean exists = false;
-      for (int i = 0; i < rNames.length; i++){
+      for (int i = 1; i < rNames.length; i++){
         exists = false;
         for (Relation r : database){
           if (r.getName().equalsIgnoreCase(rNames[i])){
@@ -111,7 +111,7 @@ public class Database implements java.io.Serializable{
       System.out.println("Destroyed relation "+rName+".");
     }
   }
-	
+
 	// needs error handling
   public void deleteWhere(String rName, String[] condList){
 		Relation deleteRel = findRelation(rName);
@@ -122,14 +122,17 @@ public class Database implements java.io.Serializable{
 			newRel.addFirst(base);
 		} else{
 			for (Tuple t : oldRel){
-				//if (!conditionParser.evaluate(condList, t)){
-				//	newRel.add(t);
-				//}
+        // for (Attribute a : t.getTuple()){
+        //   System.out.println(a.getValue());
+        // }
+				if (!conditionParser.evaluate(t, condList)){
+					newRel.add(t);
+				}
 			}
 		}
 		deleteRel.setRelation(newRel);
   }
-	
+
 	// needs error handling
   public void selectWhere(String rName, String[] condList, String tName){
 		Relation selectRel = findRelation(rName);
@@ -139,9 +142,9 @@ public class Database implements java.io.Serializable{
 			newRel = oldRel;
 		} else{
 			for (Tuple t : oldRel){
-				//if (conditionParser.evaluate(condList, t)){
-				//	newRel.add(t);
-				//}
+				if (conditionParser.evaluate(t, condList)){
+					newRel.add(t);
+				}
 			}
 			Tuple base = oldRel.getFirst();
 			newRel.addFirst(base);
@@ -150,7 +153,7 @@ public class Database implements java.io.Serializable{
 		destroy(tName);
 		database.add(tmpRel);
   }
-	
+
 	// needs to be checked for duplicates, error handling
   public void project(String rName, String[] attList, String tName){
 		LinkedList<Tuple> projectRel = findRelation(rName).getRelation();
@@ -172,7 +175,7 @@ public class Database implements java.io.Serializable{
 			}
 			LinkedList<Tuple> tmpTup = new LinkedList<Tuple>();
 			tmpTup.add(new Tuple(tmpAtt));
-			
+
 			for (Tuple t : projectRel){
 				if (!t.equals(projectRel.getFirst())){
 					tmpAtt = new LinkedList<Attribute>();
@@ -190,9 +193,9 @@ public class Database implements java.io.Serializable{
 			database.add(tmpRel);
 		}
   }
-	
+
 	// only takes one equivalence type condition:
-	// expand to use conditionParser and to allow 
+	// expand to use conditionParser and to allow
 	// for unconditional joins (cartesian product).
   public void join(String rName1, String rName2, String[] cond, String tName){
 		LinkedList<Tuple> rel1 = null;
@@ -249,7 +252,7 @@ public class Database implements java.io.Serializable{
 		destroy(tName);
 		database.add(tmpRel);
   }
-	
+
 	// helper function
   private Relation findRelation(String rName){
     for (Relation r : database){
