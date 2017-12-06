@@ -63,7 +63,7 @@ public class SurlyParser{
   }
 
   private void executeCommand(String[] parts){
-    if (!parts[1].equals("=")){
+    if ((parts.length > 1 && !parts[1].equals("=")) || parts[0].equalsIgnoreCase("PRINT")){
       switch (parts[0].toUpperCase()){
   			case "RELATION":
   				String createName = parts[1];
@@ -76,8 +76,7 @@ public class SurlyParser{
         	database.insertTuple(insertName, values);
   				return;
       	case "PRINT":
-        	String[] printNames = Arrays.copyOfRange(parts, 1, parts.length);
-        	database.print(printNames);
+        	database.print(parts);
   				return;
         case "DESTROY":
           String destroyName = parts[1];
