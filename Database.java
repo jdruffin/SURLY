@@ -4,14 +4,14 @@ import java.io.*;
 
 public class Database implements java.io.Serializable{
 
-  //create the main database
   private LinkedList<Relation> database = null;
 
+  // constructor
   public Database(){
     database = new LinkedList<Relation>();
   }
 
-  //this is how you can add a realtion to the database
+  // adds a realtion to the database
   public void addRelation(String rName, String[] schema){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
@@ -44,6 +44,7 @@ public class Database implements java.io.Serializable{
     database.add(relation);
   }
 
+  // inserts a tuple into an existing relation
   public void insertTuple(String rName, String[] values){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();
@@ -78,6 +79,8 @@ public class Database implements java.io.Serializable{
     }
   }
 
+  // prints all relations specified in rNames,
+  // or prints database schema if none are specified.
   public void print(String[] rNames){
     if (rNames.length == 1){
 			String schema = "";
@@ -106,6 +109,7 @@ public class Database implements java.io.Serializable{
     }
   }
 
+  // removes a relation from the database
   public void destroy(String rName){
     Relation oldRelation = findRelation(rName);
     if (oldRelation != null){
@@ -115,6 +119,8 @@ public class Database implements java.io.Serializable{
   }
 
 	// needs error handling
+  // deletes all tuples in the specified relation that meet the conditions,
+  // or deletes all tuples if no conditions are specified
   public void deleteWhere(String rName, String[] condList){
 		Relation deleteRel = findRelation(rName);
 		LinkedList<Tuple> newRel = new LinkedList<Tuple>();
@@ -136,6 +142,9 @@ public class Database implements java.io.Serializable{
   }
 
 	// needs error handling
+  // creates a temporary relation called tName with tuples from
+  // the specified relation that meet the conditions,
+  // or all tuples if no conditions are specified.
   public void selectWhere(String rName, String[] condList, String tName){
 		Relation selectRel = findRelation(rName);
 		LinkedList<Tuple> newRel = new LinkedList<Tuple>();
@@ -156,7 +165,9 @@ public class Database implements java.io.Serializable{
 		database.add(tmpRel);
   }
 
-	// needs to be checked for duplicates, error handling
+	// needs to be checked for duplicates, error handling.
+  // creates a temporary relation called tName with only the
+  // specified attributes from the specified relation.
   public void project(String rName, String[] attList, String tName){
 		LinkedList<Tuple> projectRel = findRelation(rName).getRelation();
 		if (projectRel != null){
@@ -199,6 +210,8 @@ public class Database implements java.io.Serializable{
 	// only takes one equivalence type condition:
 	// expand to use conditionParser and to allow
 	// for unconditional joins (cartesian product).
+  // creates a new table with tuples that are joined from
+  // relation1 and relation2 if they meet the join condition.
   public void join(String rName1, String rName2, String[] cond, String tName){
 		LinkedList<Tuple> rel1 = null;
 		LinkedList<Tuple> rel2 = null;
@@ -255,7 +268,7 @@ public class Database implements java.io.Serializable{
 		database.add(tmpRel);
   }
 
-	// helper function
+	// returns the relation whose name matches rName
   private Relation findRelation(String rName){
     for (Relation r : database){
       if (r.getName().equalsIgnoreCase(rName)){
