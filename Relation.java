@@ -5,14 +5,19 @@ import java.io.*;
 public class Relation implements java.io.Serializable{
 
 	private String name;
-	private int temp;
+	private int temp = 0;
 	private LinkedList<Tuple> relation = new LinkedList<Tuple>();
 
-	//constructor
-	public Relation(String name,int temp , LinkedList<Tuple> Relation) {
+	// default constructor
+	public Relation(String name, LinkedList<Tuple> relation){
+		this.name = name;
+		this.relation = relation;
+	}
+	// constructor specifying temp status
+	public Relation(String name, LinkedList<Tuple> relation, int temp) {
 		this.name = name;
 		this.temp = temp;
-		this.relation = Relation;
+		this.relation = relation;
 	}
 
 	public void print(){
