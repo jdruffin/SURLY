@@ -75,42 +75,30 @@ public class conditionParser{
   }
 
   public static boolean helper(ArrayList<String> operators, ArrayList<Boolean> bools){
-    if(bools.size() == 0){
+    if(bools.size() > 0){
+      for(String op : operators){
+        if(op.equals("and")){
+          boolean result = bools.get(i) && bools.get(i+1);
+          bools.remove(i+1);
+          bools.set(i, result);
+          operators.remove(i);
+          return helper(operators, bools);
+        }
+      }
+      for(Boolean b : bools){
+        if (b){
+          return true;
+        }
+      }
+    } else{
       return false;
     }
-    for(int i = 0; i < operators.size(); i++){
-      if(operators.get(i).equals("and")){
-        boolean result = bools.get(i) && bools.get(i+1);
-        bools.remove(i+1);
-        bools.set(i, result);
-        operators.remove(i);
-        return helper(operators, bools);
-      }
-    }
-    for(int i = 0; i < bools.size(); i++){
-      if(bools.get(i) == true){
-        return true;
-      }
-    }
-
-  return false;
   }
 
   public static boolean evaluate(Tuple tuple, String[] conditions){
-
       ArrayList<String> operators = createOperators(conditions);
       ArrayList<Boolean> bools    = createBools(tuple, conditions);
-
-       for(String s: operators){
-         System.out.println(s);
-       }
-
-       for(boolean s: bools){
-         System.out.println(s);
-       }
       boolean result = helper(operators, bools);
       return result;
-
-    }
   }
 }
