@@ -122,12 +122,12 @@ public class Database implements java.io.Serializable{
 			newRel.addFirst(base);
 		} else{
 			for (Tuple t : oldRel){
-         for (Attribute a : t.getTuple()){
-           System.out.println(a.getValue());
-         }
-  				if (!conditionParser.evaluate(t, condList)){
+        for (Attribute a : t.getTuple()){
+          System.out.println(a.getValue());
+        }
+  		  if (!conditionParser.evaluate(t, condList)){
   					newRel.add(t);
-  				}
+  			}
 			}
 		}
 		deleteRel.setRelation(newRel);
