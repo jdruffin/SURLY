@@ -4,12 +4,14 @@ import java.io.*;
 
 public class Database implements java.io.Serializable{
 
+  //create the main database
   private LinkedList<Relation> database = null;
 
   public Database(){
     database = new LinkedList<Relation>();
   }
 
+  //this is how you can add a realtion to the database
   public void addRelation(String rName, String[] schema){
     LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
     LinkedList<Tuple>     tupleList     = new LinkedList<Tuple>();

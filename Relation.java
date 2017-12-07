@@ -5,11 +5,13 @@ import java.io.*;
 public class Relation implements java.io.Serializable{
 
 	private String name;
+	private int temp;
 	private LinkedList<Tuple> relation = new LinkedList<Tuple>();
 
 	//constructor
-	public Relation(String name, LinkedList<Tuple> Relation) {
+	public Relation(String name,int temp , LinkedList<Tuple> Relation) {
 		this.name = name;
+		this.temp = temp;
 		this.relation = Relation;
 	}
 
@@ -47,7 +49,12 @@ public class Relation implements java.io.Serializable{
 		return relation;
 	}
 
+	public LinkedList<Tuple> getFlag(){
+		return temp;
+	}
+
 	public void setRelation(LinkedList<Tuple> r){
 		this.relation = r;
 	}
 }
+//Database relation conditionParser
