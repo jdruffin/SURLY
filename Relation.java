@@ -54,7 +54,7 @@ public class Relation implements java.io.Serializable{
 		return relation;
 	}
 
-	public LinkedList<Tuple> getFlag(){
+	public int getTemp(){
 		return temp;
 	}
 

@@ -76,23 +76,24 @@ public class conditionParser{
 
   public static boolean helper(ArrayList<String> operators, ArrayList<Boolean> bools){
     if(bools.size() > 0){
+      int enumerate = 0;
       for(String op : operators){
         if(op.equals("and")){
-          boolean result = bools.get(i) && bools.get(i+1);
-          bools.remove(i+1);
-          bools.set(i, result);
-          operators.remove(i);
+          boolean result = bools.get(enumerate) && bools.get(enumerate+1);
+          bools.remove(enumerate+1);
+          bools.set(enumerate, result);
+          operators.remove(enumerate);
           return helper(operators, bools);
         }
+        enumerate ++;
       }
       for(Boolean b : bools){
         if (b){
           return true;
         }
       }
-    } else{
-      return false;
     }
+    return false;
   }
 
   public static boolean evaluate(Tuple tuple, String[] conditions){

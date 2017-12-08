@@ -151,7 +151,7 @@ public class Database implements java.io.Serializable{
   // or all tuples if no conditions are specified.
   public void selectWhere(String rName, String[] condList, String tName){
 		Relation selectRel = findRelation(rName);
-    if (deleteRel == null){
+    if (selectRel == null){
       System.out.println("DELETE_ERR: Unable to find relation "+rName);
     } else{
   		LinkedList<Tuple> newRel = new LinkedList<Tuple>();
@@ -223,13 +223,13 @@ public class Database implements java.io.Serializable{
   // creates a new table with tuples that are joined from
   // relation1 and relation2 if they meet the join condition.
   public void join(String rName1, String rName2, String[] cond, String tName){
-    Relation relation1 = findRelation();
-    Relation relation2 = findRelation();
-    if (rel1 == null || rel2 == null){
+    Relation relation1 = findRelation(rName1);
+    Relation relation2 = findRelation(rName2);
+    if (relation1 == null || relation2 == null){
       System.out.println("JOIN_ERR: Unable to find relation (JOIN "+rName1+", "+rName2+")");
     } else{
-  		LinkedList<Tuple> rel1 = relation1.getFirst();
-  		LinkedList<Tuple> rel2 = relation2.getFirst();
+  		LinkedList<Tuple> rel1 = relation1.getRelation();
+  		LinkedList<Tuple> rel2 = relation2.getRelation();
   		String op1 = cond[0];
   		String op2 = cond[2];
       int index1 = getAttributeIndex(op1, rel1);
