@@ -5,15 +5,21 @@ import java.io.*;
 public class Relation implements java.io.Serializable{
 
 	private String name;
-	private int temp = 0;
-	private LinkedList<Tuple> relation = new LinkedList<Tuple>();
-
-	// default constructor
+	private int temp;
+	private LinkedList<Tuple> relation;
+	
+	public Relation(){
+		name = "";
+		temp = 0;
+		relation = new LinkedList<Tuple>();
+	}
+	
 	public Relation(String name, LinkedList<Tuple> relation){
 		this.name = name;
+		this.temp = 0;
 		this.relation = relation;
 	}
-	// constructor specifying temp status
+
 	public Relation(String name, LinkedList<Tuple> relation, int temp) {
 		this.name = name;
 		this.temp = temp;
@@ -58,8 +64,11 @@ public class Relation implements java.io.Serializable{
 		return temp;
 	}
 
+	public void setTemp(int t){
+		temp = t;
+	}
+
 	public void setRelation(LinkedList<Tuple> r){
 		this.relation = r;
 	}
 }
-//Database relation conditionParser

@@ -4,13 +4,20 @@ import java.io.*;
 
 public class Attribute implements java.io.Serializable{
 
-	private String name=null;
-	private String type=null;
-	private int length=0;
-	private int columnWidth=0;
-	private String value=null;
+	private String name;
+	private String type;
+	private int length;
+	private int columnWidth;
+	private String value;
 
-	//constructor
+	public Attribute(){	
+		this.name = null;
+		this.type = null;
+		this.length = 0;
+		this.value = null;
+		this.columnWidth = 0;
+	}
+
 	public Attribute(String name, String type, int length, String value){
 		this.name = name;
 		this.type = type;
@@ -32,7 +39,7 @@ public class Attribute implements java.io.Serializable{
 			if (value.length() > length){
 				value = value.substring(value.length()-length, value.length());
 			}
-		} else{
+		} else {
     	if (value.length() > length){
       value = value.substring(0, length);
 			}
@@ -49,17 +56,33 @@ public class Attribute implements java.io.Serializable{
 	public String getName(){
 		return name;
 	}
+	
+	public void setName(String n){
+		name = n;
+	}
 
 	public String getType(){
 		return type;
+	}
+	
+	public void setType(String t){
+		type = t;
 	}
 
 	public int getLength(){
 		return length;
 	}
+	
+	public void setLength(int l){
+		length = l;
+	}
 
 	public int getColumnWidth(){
 		return columnWidth;
+	}
+
+	public void setColumntWidth(int c){
+		columnWidth = c;
 	}
 
 	public String getValue(){
@@ -67,6 +90,6 @@ public class Attribute implements java.io.Serializable{
 	}
 
 	public void setValue(String value){
-		this.value = value;
+		value = value;
 	}
 }

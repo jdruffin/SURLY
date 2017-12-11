@@ -21,5 +21,8 @@ public class Tuple implements java.io.Serializable{
 	public LinkedList<Attribute> getTuple(){
 		return tuple;
 	}
-
+	
+	public void setTuple(LinkedList<Attribute> t){
+		tuple = t;
+	}
 }
