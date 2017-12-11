@@ -155,11 +155,17 @@ public class SurlyParser{
 						}
 						return;
 					case "JOIN":
-						if (parts.length == 9){
+						if (parts.length >= 5){
 							String joinName1 = parts[3];
 							String joinName2 = parts[4];
-							String[] joinCondition = Arrays.copyOfRange(parts, 6, parts.length);
-							database.join(joinName1, joinName2, joinCondition, tempName);
+							String[] joinCondition;
+							if (parts.length == 9){
+								joinCondition = Arrays.copyOfRange(parts, 6, parts.length);
+								database.join(joinName1, joinName2, joinCondition, tempName);
+							} else if (parts.length == 5){
+								joinCondition = null;
+								database.join(joinName1, joinName2, joinCondition, tempName);
+							}
 						} else {
 							formatErr("JOIN");
 						}

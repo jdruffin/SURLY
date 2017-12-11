@@ -120,7 +120,6 @@ public class Database implements java.io.Serializable{
     }
   }
 
-	// needs error handling
   // deletes all tuples in the specified relation that meet the conditions,
   // or deletes all tuples if no conditions are specified
   public void deleteWhere(String rName, String[] condList){
@@ -150,7 +149,6 @@ public class Database implements java.io.Serializable{
     }
   }
 
-	// needs error handling
   // creates a temporary relation called tName with tuples from
   // the specified relation that meet the conditions,
   // or all tuples if no conditions are specified.
@@ -229,9 +227,6 @@ public class Database implements java.io.Serializable{
 		}
   }
 
-	// only takes one equivalence type condition:
-	// expand to use conditionParser and to allow
-	// for unconditional joins (cartesian product).
   // creates a new table with tuples that are joined from
   // relation1 and relation2 if they meet the join condition.
   public void join(String rName1, String rName2, String[] cond, String tName){
@@ -242,37 +237,50 @@ public class Database implements java.io.Serializable{
     } else {
   		LinkedList<Tuple> rel1 = relation1.getRelation();
   		LinkedList<Tuple> rel2 = relation2.getRelation();
-  		String op1 = cond[0];
-  		String op2 = cond[2];
-      int index1 = getAttributeIndex(op1, relation1);
-      int index2 = getAttributeIndex(op2, relation2);
-      if (index1 == -1 || index2 == -1){
-        System.out.println("JOIN_ERR: Unable to find attribute ("+op1+" in "+rName1+" and/or "+op2+" in "+rName2+")");
-      } else {
-    		LinkedList<Attribute> tmpAtt = new LinkedList<Attribute>();
-    		LinkedList<Tuple> newRel = new LinkedList<Tuple>();
-    		tmpAtt.addAll(rel1.getFirst().getTuple());
-    		tmpAtt.addAll(rel2.getFirst().getTuple());
-    		Tuple base = new Tuple(tmpAtt);
-    		newRel.add(base);
-    		for (Tuple t : rel1){
-    			for (Tuple r : rel2){
-    				String data1 = t.getTuple().get(index1).getValue();
-    				String data2 = r.getTuple().get(index2).getValue();
-    				if (data1 != null && data2 != null && data1.equalsIgnoreCase(data2)){
-    					tmpAtt = new LinkedList<Attribute>();
-    					tmpAtt.addAll(t.getTuple());
-    					tmpAtt.addAll(r.getTuple());
-    					Tuple tmpTup = new Tuple(tmpAtt);
-    					newRel.add(tmpTup);
-    				}
-    			}
-    		}
-    		Relation tmpRel = new Relation(tName, newRel, 1);
-    		destroy(tName, true);
-				System.out.println("Created temporary relation "+tName);
-    		database.add(tmpRel);
-      }
+			LinkedList<Tuple>newRel = new LinkedList<Tuple>();
+			LinkedList<Attribute> tmpAtt = new LinkedList<Attribute>();
+			if (cond == null){
+				for (Tuple t : rel1){
+					tmpAtt = new LinkedList<Attribute>();
+					for (Tuple r : rel2){
+						tmpAtt.addAll(t.getTuple());
+						tmpAtt.addAll(r.getTuple());
+						Tuple tmpTup = new Tuple(tmpAtt);
+						newRel.add(tmpTup);
+					}
+				}
+			} else {
+				String op1 = cond[0];
+				String op2 = cond[2];
+				int index1 = getAttributeIndex(op1, relation1);
+				int index2 = getAttributeIndex(op2, relation2);
+				if (index1 == -1 || index2 == -1){
+					System.out.println("JOIN_ERR: Unable to find attribute ("+op1+" in "+rName1+" and/or "+op2+" in "+rName2+")");
+					return;
+				} else {
+					tmpAtt.addAll(rel1.getFirst().getTuple());
+					tmpAtt.addAll(rel2.getFirst().getTuple());
+					Tuple base = new Tuple(tmpAtt);
+					newRel.add(base);
+					for (Tuple t : rel1){
+						for (Tuple r : rel2){
+							String data1 = t.getTuple().get(index1).getValue();
+							String data2 = r.getTuple().get(index2).getValue();
+							if (data1 != null && data2 != null && data1.equalsIgnoreCase(data2)){
+								tmpAtt = new LinkedList<Attribute>();
+								tmpAtt.addAll(t.getTuple());
+								tmpAtt.addAll(r.getTuple());
+								Tuple tmpTup = new Tuple(tmpAtt);
+								newRel.add(tmpTup);
+							}
+						}
+					}
+				}
+			}
+			Relation tmpRel = new Relation(tName, newRel, 1);
+			destroy(tName, true);
+			System.out.println("Created temporary relation "+tName);
+			database.add(tmpRel);
     }
   }
 	
