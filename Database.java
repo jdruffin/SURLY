@@ -240,14 +240,20 @@ public class Database implements java.io.Serializable{
 			LinkedList<Tuple>newRel = new LinkedList<Tuple>();
 			LinkedList<Attribute> tmpAtt = new LinkedList<Attribute>();
 			if (cond == null){
+				int mode = 1;
 				for (Tuple t : rel1){
-					tmpAtt = new LinkedList<Attribute>();
 					for (Tuple r : rel2){
-						tmpAtt.addAll(t.getTuple());
-						tmpAtt.addAll(r.getTuple());
-						Tuple tmpTup = new Tuple(tmpAtt);
-						newRel.add(tmpTup);
+						if (mode != 2){
+							tmpAtt = new LinkedList<Attribute>();
+							tmpAtt.addAll(t.getTuple());
+							tmpAtt.addAll(r.getTuple());
+							Tuple tmpTup = new Tuple(tmpAtt);
+							newRel.add(tmpTup);
+						}
+						if (mode == 1) break;
+						if (mode == 2) mode = 3;	
 					}
+					mode = 2;
 				}
 			} else {
 				String op1 = cond[0];
