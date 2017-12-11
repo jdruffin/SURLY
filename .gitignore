@@ -3,7 +3,7 @@
 
 # Vim Swap files
 *.swp
-
+*.swo
 # Package Files
 *.jar
 *.war
