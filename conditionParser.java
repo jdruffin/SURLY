@@ -69,7 +69,13 @@ public class conditionParser{
   public static ArrayList<String> createOperators(String[] conditions){
     ArrayList<String> operators = new ArrayList<String>();
     for(int i = 4; i < conditions.length; i=i+4){
-      operators.add(conditions[i]);
+			String operator = conditions[i];
+			if (operator.equalsIgnoreCase("AND") || operator.equalsIgnoreCase("OR")){
+      	operators.add(conditions[i]);
+			} else {
+				operators = null;
+				break;
+			}
     }
     return operators;
   }
